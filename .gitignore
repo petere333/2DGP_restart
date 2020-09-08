@@ -132,10 +132,9 @@ dmypy.json
 
 # pycharm 관련 내용추가
 
-venv/
 .idea/
 db.sqlite3
-<MY-PROJECT-DIRECTORY>/settings.py
+settings.py
 
 #그외 잡다한 임시파일
 
