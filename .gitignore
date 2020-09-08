@@ -133,8 +133,6 @@ dmypy.json
 # pycharm 관련 내용추가
 
 .idea/
-db.sqlite3
-settings.py
 
 #그외 잡다한 임시파일
 
