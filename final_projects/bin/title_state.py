@@ -6,13 +6,13 @@ image=None
 
 def enter():
     global image
-    image = load_image('../res/title.png')
+    image = load_image('../res/back.png')
 
 def update():
     pass
 
 def draw():
-    image.draw(400, 300)
+    image.draw(300, 400)
 
 def handle_event(e):
     if e.type == SDL_QUIT:
