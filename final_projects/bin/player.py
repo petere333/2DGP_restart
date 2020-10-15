@@ -14,8 +14,10 @@ class Player:
     def __init__(self):
         if Player.image is None:
             Player.image = load_image("../res/sprites_32.png")
-        self.x, self.y = 300, 50
-        self.dx, self.dy = 0, 0
+        self.x = 300
+        self.y = 50
+        self.dx = 0
+        self.dy = 0
         self.last_fire = time.time()
         self.duration = 0.5
         self.collides = False
@@ -25,7 +27,9 @@ class Player:
 
     def update(self):
         if 584 >= self.x+self.dx >= 16:
-            self.x, self.y = self.x+self.dx, self.y+self.dy
+            self.x += self.dx
+        if 30 <= self.y+self.dy <= 130:
+            self.y += self.dy
 
     def fire(self):
         global player_bullets
@@ -51,7 +55,7 @@ class Player_Bullet:
         Player_Bullet.image.draw(self.x, self.y)
 
     def update(self):
-        if self.y+self.dy < 796:
+        if self.y+self.dy < 810:
             self.x, self.y = self.x, self.y + self.dy
         else:
             self.crash = True

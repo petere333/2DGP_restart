@@ -15,9 +15,13 @@ def enter():
     if player is None:
         player = Player()
     if len(enemies) == 0:
-        enemies.append(Enemy(300, 600))
-        enemies.append(Enemy(268, 600))
-        enemies.append(Enemy(332, 600))
+        enemies.append(CurveEnemy(301, 600, 10, 1))
+        enemies.append(CurveEnemy(333, 600, 10, 2))
+        enemies.append(CurveEnemy(365, 600, 10, 10))
+        enemies.append(CurveEnemy(32, 600, 5, 4))
+        enemies.append(CurveEnemy(64, 600, 5, 5))
+        enemies.append(CurveEnemy(96, 600, 5, 20))
+
     pass
 
 
@@ -57,7 +61,7 @@ def update():
             del eb
 
     for en in enemies:
-        if player.x-31 <= en.x <= player.x+31 and player.y-41 <= en.y <= player.y+21:
+        if player.x-21 <= en.x <= player.x+21 and player.y-21 <= en.y <= player.y+21:
             player.collides = True
 
     if player.collides:
@@ -103,6 +107,10 @@ def handle_event(e):
             player.dx -= 5
         elif e.key == SDLK_RIGHT:
             player.dx += 5
+        elif e.key == SDLK_UP:
+            player.dy += 5
+        elif e.key == SDLK_DOWN:
+            player.dy -= 5
         elif e.key == SDLK_SPACE:
             player.fire()
     elif e.type == SDL_KEYUP:
@@ -110,7 +118,10 @@ def handle_event(e):
             player.dx += 5
         elif e.key == SDLK_RIGHT:
             player.dx -= 5
-
+        elif e.key == SDLK_UP:
+            player.dy -= 5
+        elif e.key == SDLK_DOWN:
+            player.dy += 5
 
 def exit():
     pass
