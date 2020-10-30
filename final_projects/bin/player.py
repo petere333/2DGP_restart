@@ -47,7 +47,7 @@ class Player_Bullet:
         if Player_Bullet.image is None:
             Player_Bullet.image = load_image("../res/bullet_8.png")
         self.x, self.y = x, y
-        self.dy = 5
+        self.dy = 8
         self.crash = False
         print("number of bullets : ", len(player_bullets)+1)
 

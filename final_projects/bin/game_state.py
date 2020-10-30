@@ -8,6 +8,7 @@ import time
 player = None
 image_back = None
 
+
 def enter():
     global player, image_back
     if image_back is None:
@@ -15,12 +16,8 @@ def enter():
     if player is None:
         player = Player()
     if len(enemies) == 0:
-        enemies.append(CurveEnemy(301, 600, 10, 1))
-        enemies.append(CurveEnemy(333, 600, 10, 2))
-        enemies.append(CurveEnemy(365, 600, 10, 10))
-        enemies.append(CurveEnemy(32, 600, 5, 4))
-        enemies.append(CurveEnemy(64, 600, 5, 5))
-        enemies.append(CurveEnemy(96, 600, 5, 20))
+        enemies.append(DivideEnemy(348, 500, 0, 0, 1, True, 0))
+        enemies.append(DivideEnemy(252, 500, 0, 0, 1, True, 0))
 
     pass
 

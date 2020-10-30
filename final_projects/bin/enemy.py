@@ -145,6 +145,94 @@ class CurveEnemy:
         print("number of enemies : ", len(enemies))
 
 
+class DivideEnemy:
+    image = None
+
+    def __init__(self, sx, sy, dxx, dyy, destructTime, en, divided):
+        if CurveEnemy.image is None:
+            CurveEnemy.image = load_image("../res/sprites_32.png")
+        self.x, self.y = sx, sy
+        self.sx = self.x
+        self.dx, self.dy = dxx, dyy
+        self.last_fire = time.time()
+        self.angle = atan2(self.dy, self.dx)
+        self.direction = 0
+        self.duration = random() * 2.0 + 3
+        self.collides = False
+        self.spawnedTime = time.time()
+        self.destructTime = destructTime
+        self.speed = 4
+        self.enabled = en
+        self.divided = divided
+        if self.dx == 0 and self.dy == 0:
+            self.direction = 12
+        else:
+            for i in range(-18, 6):
+                if pi / 12 * (-6 + -6 - i) - pi / 24 <= self.angle < pi / 12 * (-6 + -6 - i) + pi / 24:
+                    self.direction = i + 18
+                    break
+        print("number of enemies : ", len(enemies) + 1)
+
+    def draw(self):
+        CurveEnemy.image.clip_draw(32*(self.direction+1), 224, 32, 32, self.x, self.y)
+
+    def update(self):
+        if 626 >= self.x+self.dx >= -26 and 826 >= self.y+self.dy >= -26:
+            self.x, self.y = self.x+self.dx, self.y+self.dy
+        now = time.time()
+
+        if self.y < -16 or self.y > 816 or self.x < -16 or self.x > 616:
+            self.collides = True
+
+        if now-self.spawnedTime >= self.destructTime:
+            if self.y >= 455:
+                tangle = atan2(-1, 0)
+                self.dx = cos(tangle)*self.speed
+                self.dy = sin(tangle)*self.speed
+            elif 445 <= self.y <= 455 and self.divided == 0:
+                tangle = atan2(-2, 1)
+                tangle2 = atan2(-2, -1)
+                dxx1 = cos(tangle)*self.speed
+                dxx2 = cos(tangle2)*self.speed
+                dyy1 = sin(tangle)*self.speed
+                dyy2 = sin(tangle2)*self.speed
+                enemies.append(DivideEnemy(self.x, self.y, dxx1, dyy1, 0, False, 1))
+                enemies.append(DivideEnemy(self.x, self.y, dxx2, dyy2, 0, False, 1))
+                enemies.remove(self)
+                del self
+            elif 245 <= self.y <= 255 and self.divided == 1:
+                tangle = atan2(-2, 1)
+                tangle2 = atan2(-2, -1)
+                dxx1 = cos(tangle)*self.speed
+                dxx2 = cos(tangle2)*self.speed
+                dyy1 = sin(tangle)*self.speed
+                dyy2 = sin(tangle2)*self.speed
+                enemies.append(DivideEnemy(self.x, self.y, dxx1, dyy1, 0, False, 2))
+                enemies.append(DivideEnemy(self.x, self.y, dxx2, dyy2, 0, False, 2))
+                enemies.remove(self)
+                del self
+
+
+    def fire(self):
+        global enemy_bullets, enemies
+        now = time.time()
+
+        if self.last_fire+self.duration < now and self.enabled is True:
+            xSpeed = 0
+            ySpeed = 0
+            if self.dx == 0 and self.dy == 0:
+                xSpeed = 0
+                ySpeed = -6
+            else:
+                temp = atan2(self.dy, self.dx)
+                xSpeed = cos(temp)*6
+                ySpeed = sin(temp)*6
+            enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, xSpeed, ySpeed))
+            self.last_fire = now
+
+    def __del__(self):
+        print("number of enemies : ", len(enemies))
+
 class Enemy_Bullet:
     image = None
 
