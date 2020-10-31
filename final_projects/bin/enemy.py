@@ -1,5 +1,4 @@
 from pico2d import *
-from game_state import *
 import time
 from math import *
 from random import *
@@ -35,24 +34,24 @@ class Enemy:
         print("number of enemies : ", len(enemies)+1)
 
     def draw(self):
-        Enemy.image.clip_draw(32*(self.direction+1), 320, 32, 32, self.x, self.y)
+        Enemy.image.clip_draw(32*(self.direction+1), 320, 32, 32, self.x, self.y, 50, 50)
 
     def update(self):
-        if 626 >= self.x+self.dx >= -26 and 826 >= self.y+self.dy >= -26:
+        if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
             self.x, self.y = self.x+self.dx, self.y+self.dy
         now = time.time()
         if now-self.spawnedTime >= self.destructTime:
             tangle = atan2(-1, 0)
             self.dx = cos(tangle)*self.speed
             self.dy = sin(tangle)*self.speed
-        if self.y < -16 or self.y > 816 or self.x < -16 or self.x > 616:
+        if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
     def fire(self):
         global enemy_bullets
         now = time.time()
         if self.last_fire+self.duration < now:
-            enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, 0, -6))
+            enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, 0, -4))
             self.last_fire = now
 
     def __del__(self):
@@ -89,15 +88,15 @@ class CurveEnemy:
         print("number of enemies : ", len(enemies) + 1)
 
     def draw(self):
-        CurveEnemy.image.clip_draw(32*(self.direction+1), 288, 32, 32, self.x, self.y)
+        CurveEnemy.image.clip_draw(32*(self.direction+1), 288, 32, 32, self.x, self.y, 50, 50)
 
     def update(self):
-        if 626 >= self.x+self.dx >= -26 and 826 >= self.y+self.dy >= -26:
+        if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
             self.x, self.y = self.x+self.dx, self.y+self.dy
         now = time.time()
-        if now-self.spawnedTime >= self.destructTime and self.y > 200:
+        if now-self.spawnedTime >= self.destructTime and self.y > 220:
             self.dy = -6
-        elif self.y <= 200 and self.sx <= 300:
+        elif self.y <= 220 and self.sx <= 300:
             if self.dy >= -0.5:
                 tx, ty = destructCurve(self.x, self.y, self.sx+600, 200, self.additional, 1, self.speed)
             elif self.dy <= 0.5:
@@ -106,7 +105,7 @@ class CurveEnemy:
             self.dy = ty
 
             self.additional += self.addi
-        elif self.y <= 200 and self.sx > 300:
+        elif self.y <= 220 and self.sx > 300:
             if self.dy >= -0.5:
                 tx, ty = destructCurve(self.x, self.y, self.sx-600, 200, self.additional, 0, self.speed)
             else:
@@ -122,7 +121,7 @@ class CurveEnemy:
                 if pi / 12 * (-6 + -6 - i) - pi / 24 <= self.angle < pi / 12 * (-6 + -6 - i) + pi / 24:
                     self.direction = i + 18
                     break
-        if self.y < -16 or self.y > 816 or self.x < -16 or self.x > 616:
+        if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
     def fire(self):
@@ -133,11 +132,11 @@ class CurveEnemy:
             ySpeed = None
             if self.dx == 0 and self.dy == 0:
                 xSpeed = 0
-                ySpeed = -6
+                ySpeed = -4
             else:
                 temp = atan2(self.dy, self.dx)
-                xSpeed = cos(temp)*self.speed
-                ySpeed = sin(temp)*self.speed
+                xSpeed = cos(temp)*4
+                ySpeed = sin(temp)*4
             enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, xSpeed, ySpeed))
             self.last_fire = now
 
@@ -149,8 +148,8 @@ class DivideEnemy:
     image = None
 
     def __init__(self, sx, sy, dxx, dyy, destructTime, en, divided):
-        if CurveEnemy.image is None:
-            CurveEnemy.image = load_image("../res/sprites_32.png")
+        if DivideEnemy.image is None:
+            DivideEnemy.image = load_image("../res/sprites_32.png")
         self.x, self.y = sx, sy
         self.sx = self.x
         self.dx, self.dy = dxx, dyy
@@ -174,14 +173,17 @@ class DivideEnemy:
         print("number of enemies : ", len(enemies) + 1)
 
     def draw(self):
-        CurveEnemy.image.clip_draw(32*(self.direction+1), 224, 32, 32, self.x, self.y)
+        if self.divided == 0:
+            DivideEnemy.image.clip_draw(32 * (self.direction + 1), 224, 32, 32, self.x, self.y, 50, 50)
+        else:
+            DivideEnemy.image.clip_draw(32 * (self.direction + 1), 192, 32, 32, self.x, self.y, 50, 50)
 
     def update(self):
-        if 626 >= self.x+self.dx >= -26 and 826 >= self.y+self.dy >= -26:
+        if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
             self.x, self.y = self.x+self.dx, self.y+self.dy
         now = time.time()
 
-        if self.y < -16 or self.y > 816 or self.x < -16 or self.x > 616:
+        if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
         if now-self.spawnedTime >= self.destructTime:
@@ -212,7 +214,6 @@ class DivideEnemy:
                 enemies.remove(self)
                 del self
 
-
     def fire(self):
         global enemy_bullets, enemies
         now = time.time()
@@ -222,11 +223,11 @@ class DivideEnemy:
             ySpeed = 0
             if self.dx == 0 and self.dy == 0:
                 xSpeed = 0
-                ySpeed = -6
+                ySpeed = -4
             else:
                 temp = atan2(self.dy, self.dx)
-                xSpeed = cos(temp)*6
-                ySpeed = sin(temp)*6
+                xSpeed = cos(temp)*4
+                ySpeed = sin(temp)*4
             enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, xSpeed, ySpeed))
             self.last_fire = now
 

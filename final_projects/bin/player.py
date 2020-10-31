@@ -1,7 +1,5 @@
 from pico2d import *
-from game_state import *
 import time
-import helper
 from enemy import *
 
 player_bullets = []
@@ -19,14 +17,14 @@ class Player:
         self.dx = 0
         self.dy = 0
         self.last_fire = time.time()
-        self.duration = 0.5
+        self.duration = 0.3
         self.collides = False
 
     def draw(self):
-        Player.image.clip_draw(0, 480, 32, 32, self.x, self.y)
+        Player.image.clip_draw(0, 480, 32, 32, self.x, self.y, 50, 50)
 
     def update(self):
-        if 584 >= self.x+self.dx >= 16:
+        if 575 >= self.x+self.dx >= 25:
             self.x += self.dx
         if 30 <= self.y+self.dy <= 130:
             self.y += self.dy
