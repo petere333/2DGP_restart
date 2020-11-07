@@ -9,17 +9,31 @@ closing = False
 change_state = None
 trash_can = []
 
+score_font = None
+current_score = None
 moving = False
 
 
 def init():
-    global player, image_back, endgame, closing, change_state, enemies, enemy_bullets, player_bullets, player, moving
+    global player, image_back, endgame, closing, change_state, enemies, enemy_bullets, player_bullets
+    global player, moving, score_font, current_score, bullets_evade
+    global catch_curve, catch_divide, catch_normal, num_curve, num_divide, num_normal, num_bullets
+
+    catch_normal = 0
+    catch_curve = 0
+    catch_divide = 0
+    num_normal = 0
+    num_curve = 0
+    num_divide = 0
+    bullets_evade = 0
+    num_bullets = 0
 
     endgame = False
     closing = False
     moving = False
     change_state = None
-
+    score_font = load_font("../res/score.ttf", 30)
+    current_score = 0
     for i in range(len(player_bullets)):
         trash_can.append(player_bullets[-1])
         player_bullets.remove(player_bullets[-1])
@@ -56,7 +70,8 @@ def init():
 
 
 def update():
-    global player, image_back, enemies, enemy_bullets, player_bullets, endgame, change_state, trash_can
+    global player, image_back, enemies, enemy_bullets, player_bullets, endgame, change_state, trash_can, num_bullets
+    global catch_curve, catch_divide, catch_normal, current_score, bullets_evade, num_normal, num_curve, num_divide
     player.update()
     for en in enemies:
         en.update()
@@ -71,6 +86,16 @@ def update():
             if en.x-22 <= b.x <= en.x+22 and en.y-22 <= b.y <= en.y+22:
                 b.crash = True
                 en.collides = True
+                if en.type == 1:
+                    catch_normal += en.score
+                    num_normal += 1
+                elif en.type == 2:
+                    catch_curve += en.score
+                    num_curve += 1
+                elif en.type == 3:
+                    catch_divide += en.score
+                    num_divide += 1
+                current_score += en.score
 
     for en in enemies:
         if en.collides:
@@ -87,6 +112,10 @@ def update():
             player.collides = True
     for eb in enemy_bullets:
         if eb.crash:
+            if eb.crashed_to_wall is True:
+                bullets_evade += 5
+                num_bullets += 1
+                current_score += 5
             trash_can.append(eb)
             enemy_bullets.remove(eb)
             del eb
@@ -114,11 +143,11 @@ def update():
         for i in range(len(trash_can)):
             trash_can.remove(trash_can[-1])
         endgame = True
-        change_state = 0
+        change_state = 2
 
 
 def draw():
-    global player, player_bullets, enemy_bullets, enemies, image_back
+    global player, player_bullets, enemy_bullets, enemies, image_back, current_score
     image_back.draw(300,400)
     player.draw()
     for en in enemies:
@@ -127,6 +156,7 @@ def draw():
         b.draw()
     for eb in enemy_bullets:
         eb.draw()
+    score_font.draw(0, 785, "Score : %d" % current_score, (255, 255, 255))
     pass
 
 
@@ -140,32 +170,28 @@ def handle_event():
             closing = True
         elif e.type == SDL_KEYDOWN:
             if e.key == SDLK_ESCAPE:
+
                 endgame = True
-                change_state = 0
+                change_state = 2
             elif e.key == SDLK_LEFT:
-                player.dx = -5
-                moving = True
+                player.dx = -7
+
             elif e.key == SDLK_RIGHT:
-                player.dx = 5
-                moving = True
+                player.dx = 7
+
             elif e.key == SDLK_UP:
-                player.dy = 5
-                moving = True
+                player.dy = 7
+
             elif e.key == SDLK_DOWN:
-                player.dy = -5
-                moving = True
+                player.dy = -7
             elif e.key == SDLK_SPACE:
                 player.fire()
         elif e.type == SDL_KEYUP:
-            if e.key == SDLK_LEFT and moving is True:
+            if e.key == SDLK_LEFT:
                 player.dx = 0
-                moving = False
-            elif e.key == SDLK_RIGHT and moving is True:
+            elif e.key == SDLK_RIGHT:
                 player.dx = 0
-                moving = False
-            elif e.key == SDLK_UP and moving is True:
+            elif e.key == SDLK_UP:
                 player.dy = 0
-                moving = False
-            elif e.key == SDLK_DOWN and moving is True:
+            elif e.key == SDLK_DOWN:
                 player.dy = 0
-                moving = False
