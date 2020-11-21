@@ -1,46 +1,31 @@
 from pico2d import *
-import time
+
 
 image = None
 end_title = False
 closing = False
 change_state = None
-title_font = None
-last_time = 0
-blink = True
 
 
 def init():
-    global image, end_title, closing, change_state, title_font, last_time, blink
-    title_font = load_font("../res/score.ttf", 30)
+    global image, end_title, closing, change_state
+
     end_title = False
     closing = False
     change_state = None
-    blink = True
-    last_time = 0
     image = load_image('../res/back.png')
 
 
 def update():
-    global blink, last_time
-    now = time.time()
-    if last_time + 0.5 <= now:
-        last_time = time.time()
-        if blink is True:
-            blink = False
-        else:
-            blink = True
     pass
 
 
 def draw():
-    global image, title_font, blink
     image.draw(300, 400)
-    if blink is True:
-        title_font.draw(100, 385, "Press Space Bar to Start", (255, 255, 255))
+
 
 def handle_event():
-    global end_title, closing, change_state, index
+    global end_title, closing, change_state
     evt = get_events()
     for e in evt:
         if e.type == SDL_QUIT:

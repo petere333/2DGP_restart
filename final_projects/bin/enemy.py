@@ -6,14 +6,6 @@ from random import *
 enemy_bullets = []
 enemies = []
 
-catch_normal = 0
-catch_curve = 0
-catch_divide = 0
-num_normal = 0
-num_curve = 0
-num_divide = 0
-bullets_evade = 0
-num_bullets = 0
 
 class Enemy:
 
@@ -22,7 +14,6 @@ class Enemy:
     def __init__(self, sx, sy, destructTime):
         if Enemy.image is None:
             Enemy.image = load_image("../res/sprites_32.png")
-        self.type = 1
         self.x, self.y = sx, sy
         self.dx, self.dy = 0, 0
         self.last_fire = time.time()
@@ -32,8 +23,7 @@ class Enemy:
         self.collides = False
         self.spawnedTime = time.time()
         self.destructTime = destructTime
-        self.speed = 6
-        self.score = 100
+        self.speed = 4
         if self.dx == 0 and self.dy == 0:
             self.direction = 12
         else:
@@ -54,7 +44,6 @@ class Enemy:
             tangle = atan2(-1, 0)
             self.dx = cos(tangle)*self.speed
             self.dy = sin(tangle)*self.speed
-            self.score = 150
         if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
@@ -76,7 +65,6 @@ class CurveEnemy:
     def __init__(self, sx, sy, destructTime, addi):
         if CurveEnemy.image is None:
             CurveEnemy.image = load_image("../res/sprites_32.png")
-        self.type = 2
         self.x, self.y = sx, sy
         self.sx = self.x
         self.dx, self.dy = 0, 0
@@ -87,10 +75,9 @@ class CurveEnemy:
         self.collides = False
         self.spawnedTime = time.time()
         self.destructTime = destructTime
-        self.speed = 6
+        self.speed = 4
         self.additional = addi
         self.addi = addi
-        self.score = 100
         if self.dx == 0 and self.dy == 0:
             self.direction = 12
         else:
@@ -108,8 +95,7 @@ class CurveEnemy:
             self.x, self.y = self.x+self.dx, self.y+self.dy
         now = time.time()
         if now-self.spawnedTime >= self.destructTime and self.y > 220:
-            self.dy = self.speed * -1
-            self.score = 150
+            self.dy = -6
         elif self.y <= 220 and self.sx <= 300:
             if self.dy >= -0.5:
                 tx, ty = destructCurve(self.x, self.y, self.sx+600, 200, self.additional, 1, self.speed)
@@ -117,7 +103,7 @@ class CurveEnemy:
                 tx, ty = destructCurve(self.x, self.y, self.sx+300, 0, self.additional, 1, self.speed)
             self.dx = tx
             self.dy = ty
-            self.score = 200
+
             self.additional += self.addi
         elif self.y <= 220 and self.sx > 300:
             if self.dy >= -0.5:
@@ -126,7 +112,6 @@ class CurveEnemy:
                 tx, ty = destructCurve(self.x, self.y, self.sx-300, 0, self.additional, 0, self.speed)
             self.dx = tx
             self.dy = ty
-            self.score = 200
             self.additional += self.addi
         self.angle = atan2(self.dy, self.dx)
         if self.dx == 0 and self.dy == 0:
@@ -165,7 +150,6 @@ class DivideEnemy:
     def __init__(self, sx, sy, dxx, dyy, destructTime, en, divided):
         if DivideEnemy.image is None:
             DivideEnemy.image = load_image("../res/sprites_32.png")
-        self.type = 3
         self.x, self.y = sx, sy
         self.sx = self.x
         self.dx, self.dy = dxx, dyy
@@ -176,12 +160,9 @@ class DivideEnemy:
         self.collides = False
         self.spawnedTime = time.time()
         self.destructTime = destructTime
-        self.speed = 6
+        self.speed = 4
         self.enabled = en
         self.divided = divided
-        self.score = 100
-        if self.divided > 0:
-            self.score = 200
         if self.dx == 0 and self.dy == 0:
             self.direction = 12
         else:
@@ -210,7 +191,6 @@ class DivideEnemy:
                 tangle = atan2(-1, 0)
                 self.dx = cos(tangle)*self.speed
                 self.dy = sin(tangle)*self.speed
-                self.score = 150
             elif 445 <= self.y <= 455 and self.divided == 0:
                 tangle = atan2(-2, 1)
                 tangle2 = atan2(-2, -1)
@@ -264,19 +244,17 @@ class Enemy_Bullet:
         self.dx = dx
         self.dy = dy
         self.crash = False
-        self.crashed_to_wall = False
         print("number of enemy bullets : ", len(enemy_bullets)+1)
 
     def draw(self):
         Enemy_Bullet.image.draw(self.x, self.y)
 
     def update(self):
-        global bullets_evade, num_bullets
         if -10 < self.y+self.dy < 810 and -10 < self.x+self.dx < 610:
             self.x, self.y = self.x+self.dx, self.y + self.dy
         else:
             self.crash = True
-            self.crashed_to_wall = True
+
     def __del__(self):
         print("number of enemy bullets : ", len(enemy_bullets))
 
