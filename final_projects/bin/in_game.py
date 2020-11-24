@@ -2,9 +2,10 @@ from pico2d import *
 from enemy import *
 from player import *
 from stage import *
+from background import *
 
 player = None
-image_back = None
+
 endgame = False
 closing = False
 change_state = None
@@ -14,12 +15,16 @@ score_font = None
 current_score = None
 moving = False
 
+bg3 = None
+bg2 = None
+bg1 = None
 
 def init():
-    global player, image_back, endgame, closing, change_state, enemies, enemy_bullets, player_bullets
+    global player, endgame, closing, change_state, enemies, enemy_bullets, player_bullets
     global player, moving, score_font, current_score, bullets_evade
     global catch_curve, catch_divide, catch_normal, num_curve, num_divide, num_normal, num_bullets
     global currentStage, stages, stage1, stage2, stage3, stage4, stage5
+    global bg3, bg2, bg1
 
     catch_normal = 0
     catch_curve = 0
@@ -49,7 +54,6 @@ def init():
         trash_can.append(enemy_bullets[-1])
         enemy_bullets.remove(enemy_bullets[-1])
 
-    image_back = load_image("../res/back.png")
     player = Player()
     #  init stage
     stages = []
@@ -106,13 +110,18 @@ def init():
         for en in stages[currentStage]:
             enemies.append(en)
         print("number of enemies : ", len(enemies) + 1)
+
+    bg3 = Background3()
+    bg2 = Background2()
+    bg1 = Background1()
     pass
 
 
 def update():
-    global player, image_back, enemies, enemy_bullets, player_bullets, endgame, change_state, trash_can, num_bullets
+    global player, enemies, enemy_bullets, player_bullets, endgame, change_state, trash_can, num_bullets
     global catch_curve, catch_divide, catch_normal, current_score, bullets_evade, num_normal, num_curve, num_divide
     global stages, currentStage, maxStage
+    global bg3, bg2
     #  모든 객체 상태 갱신
     player.update()
     for en in enemies:
@@ -122,6 +131,9 @@ def update():
         b.update()
     for eb in enemy_bullets:
         eb.update()
+    bg3.update()
+    bg2.update()
+    bg1.update()
 
     for b in player_bullets:  # 적 기체와 아군 총알 충돌
         for en in enemies:
@@ -185,11 +197,28 @@ def update():
 
         for i in range(len(trash_can)):
             trash_can.remove(trash_can[-1])
+
         endgame = True
         change_state = 2
 
     elif len(enemies) == 0 and len(enemy_bullets) == 0:  # 플레이어 생존 및 모든 적 처치시
         if currentStage + 1 >= maxStage:  # 마지막 스테이지일 시 종료
+            trash_can.append(player)
+            player = None
+
+            for i in range(len(player_bullets)):
+                trash_can.append(player_bullets[-1])
+                player_bullets.remove(player_bullets[-1])
+
+            for i in range(len(enemies)):
+                trash_can.append(enemies[-1])
+                enemies.remove(enemies[-1])
+
+            for i in range(len(enemy_bullets)):
+                trash_can.append(enemy_bullets[-1])
+                enemy_bullets.remove(enemy_bullets[-1])
+            for i in range(len(trash_can)):
+                trash_can.remove(trash_can[-1])
             endgame = True
             change_state = 2
         else:  # 아니면 다음 스테이지 시작
@@ -207,10 +236,13 @@ def update():
                 enemies.append(en)
             print("number of enemies : ", len(enemies) + 1)
 
+
 def draw():
-    global player, player_bullets, enemy_bullets, enemies, image_back, current_score, currentStage
+    global player, player_bullets, enemy_bullets, enemies, current_score, currentStage, bg3, bg2, bg1
     cs = currentStage+1
-    image_back.draw(300, 400)
+    bg3.draw()
+    bg2.draw()
+    bg1.draw()
     player.draw()
     for en in enemies:
         en.draw()
