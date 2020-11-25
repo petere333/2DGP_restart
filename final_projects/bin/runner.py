@@ -6,11 +6,12 @@ from pico2d import *
 current_state = 0
 win_close = False
 
-# current state 0=title state 1=game state 2=score
 
+# current state 0=title state 1=game state 2=score
 open_canvas(600, 800)
 
 while win_close is False:
+
     if current_state == 0:
         before_play.init()
         while before_play.end_title is False:

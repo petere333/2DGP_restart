@@ -19,12 +19,20 @@ bg3 = None
 bg2 = None
 bg1 = None
 
+bgm = None
+end_sound = None
+stage1_sound = None
+stage2_sound = None
+
+stage_end_sounds = []
+
 def init():
     global player, endgame, closing, change_state, enemies, enemy_bullets, player_bullets
     global player, moving, score_font, current_score, bullets_evade
     global catch_curve, catch_divide, catch_normal, num_curve, num_divide, num_normal, num_bullets
     global currentStage, stages, stage1, stage2, stage3, stage4, stage5
     global bg3, bg2, bg1
+    global bgm, end_sound, stage1_sound, stage2_sound, stage_end_sounds
 
     catch_normal = 0
     catch_curve = 0
@@ -114,6 +122,16 @@ def init():
     bg3 = Background3()
     bg2 = Background2()
     bg1 = Background1()
+
+    bgm = load_music("../sounds/game_bgm.ogg")
+    end_sound = load_wav("../sounds/game_end.wav")
+    stage1_sound = load_wav("../sounds/stage1_end.wav")
+    stage2_sound = load_wav("../sounds/stage2_end.wav")
+    stage_end_sounds.append(stage1_sound)
+    stage_end_sounds.append(stage2_sound)
+    bgm.set_volume(40)
+    end_sound.set_volume(128)
+    bgm.repeat_play()
     pass
 
 
@@ -122,6 +140,7 @@ def update():
     global catch_curve, catch_divide, catch_normal, current_score, bullets_evade, num_normal, num_curve, num_divide
     global stages, currentStage, maxStage
     global bg3, bg2
+    global bgm, end_sound, stage_end_sounds
     #  모든 객체 상태 갱신
     player.update()
     for en in enemies:
@@ -151,18 +170,24 @@ def update():
                     num_divide += 1
                 current_score += en.score
 
-    for en in enemies:  # 적 기체 제거
+    for en in enemies:  # 적 기체 폭발 이펙트
         if en.collides:
-            trash_can.append(en)
-            enemies.remove(en)
-            print("number of enemies : ", len(enemies) + 1)
+            en.dx = 0
+            en.dy = 0
+            en.exploding += 1
     for b in player_bullets:  # 아군 총알 제거
         if b.crash:
             trash_can.append(b)
             player_bullets.remove(b)
 
+    for en in enemies:
+        if en.exploding >= 70:
+            trash_can.append(en)
+            enemies.remove(en)
+            print("number of enemies : ", len(enemies) + 1)
+
     for eb in enemy_bullets:  # 적 총알과 플레이어 충돌
-        if player.x-22 <= eb.x <= player.x+22 and player.y-22 <= eb.y <= player.y+22:
+        if player.x-22 <= eb.x <= player.x+22 and player.y-22 <= eb.y <= player.y+22 and player.invincible is False:
             eb.crash = True
             player.collides = True
     for eb in enemy_bullets:  # 적 총알 맵 끝 도달
@@ -176,32 +201,47 @@ def update():
             del eb
 
     for en in enemies:  # 적 기체와 플레이어 충돌
-        if player.x-31 <= en.x <= player.x+31 and player.y-31 <= en.y <= player.y+31:
+        if player.x-31 <= en.x <= player.x+31 and player.y-31 <= en.y <= player.y+31 and player.invincible is False:
             player.collides = True
 
     if player.collides:  # 플레이어 사망
-        trash_can.append(player)
+        if player.life == 1:
+            trash_can.append(player)
 
-        player = None
-        for i in range(len(player_bullets)):
-            trash_can.append(player_bullets[-1])
-            player_bullets.remove(player_bullets[-1])
+            player = None
+            for i in range(len(player_bullets)):
+                trash_can.append(player_bullets[-1])
+                player_bullets.remove(player_bullets[-1])
 
-        for i in range(len(enemies)):
-            trash_can.append(enemies[-1])
-            enemies.remove(enemies[-1])
+            for i in range(len(enemies)):
+                trash_can.append(enemies[-1])
+                enemies.remove(enemies[-1])
 
-        for i in range(len(enemy_bullets)):
-            trash_can.append(enemy_bullets[-1])
-            enemy_bullets.remove(enemy_bullets[-1])
+            for i in range(len(enemy_bullets)):
+                trash_can.append(enemy_bullets[-1])
+                enemy_bullets.remove(enemy_bullets[-1])
 
-        for i in range(len(trash_can)):
-            trash_can.remove(trash_can[-1])
+            for i in range(len(trash_can)):
+                trash_can.remove(trash_can[-1])
+            end_sound.set_volume(128)
+            end_sound.play(1)
+            bgm.stop()
 
-        endgame = True
-        change_state = 2
+            endgame = True
+            change_state = 2
+        else:
+            player.life -= 1
+            player.x = 300
+            player.y = 50
+            player.dx = 0
+            player.dy = 0
+            player.collides = False
+            player.invincible = True
+            player.last_inv = time.time()
 
     elif len(enemies) == 0 and len(enemy_bullets) == 0:  # 플레이어 생존 및 모든 적 처치시
+        stage_end_sounds[randint(0, 1)].set_volume(128)
+        stage_end_sounds[randint(0, 1)].play(1)
         if currentStage + 1 >= maxStage:  # 마지막 스테이지일 시 종료
             trash_can.append(player)
             player = None
@@ -252,6 +292,9 @@ def draw():
         eb.draw()
     score_font.draw(0, 785, "Score : %d" % current_score, (255, 255, 255))
     score_font.draw(493, 785, "Stage %d" % cs, (255, 255, 255))
+    score_font.draw(300, 785, "Lifes : %d" % player.life, (255, 255, 255))
+    if player.cheating is True:
+        score_font.draw(100, 755, "Cheat enabled.", (255, 255, 255))
     pass
 
 
@@ -281,6 +324,12 @@ def handle_event():
                 player.dy = -7
             elif e.key == SDLK_SPACE:
                 player.fire()
+            elif e.key == SDLK_F5:
+                if player.cheating is False:
+                    player.cheating = True
+                else:
+                    player.cheating = False
+                    player.last_inv = 0
         elif e.type == SDL_KEYUP:
             if e.key == SDLK_LEFT:
                 player.dx = 0

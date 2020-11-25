@@ -16,13 +16,33 @@ bullets_evade = 0
 num_bullets = 0
 
 
+
+
 class Enemy:
 
     image = None
+    explode1 = None
+    explode2 = None
+    explode3 = None
+    explode4 = None
+    explode5 = None
+    explode6 = None
 
     def __init__(self, sx, sy, destructTime):
         if Enemy.image is None:
             Enemy.image = load_image("../res/sprites_32.png")
+        if Enemy. explode1 is None:
+            Enemy.explode1 = load_image("../res/explode1.png")
+        if Enemy. explode2 is None:
+            Enemy.explode2 = load_image("../res/explode2.png")
+        if Enemy. explode3 is None:
+            Enemy.explode3 = load_image("../res/explode3.png")
+        if Enemy. explode4 is None:
+            Enemy.explode4 = load_image("../res/explode4.png")
+        if Enemy. explode5 is None:
+            Enemy.explode5 = load_image("../res/explode5.png")
+        if Enemy. explode6 is None:
+            Enemy.explode6 = load_image("../res/explode6.png")
         self.type = 1
         self.x, self.y = sx, sy
         self.dx, self.dy = 0, 0
@@ -35,6 +55,7 @@ class Enemy:
         self.destructTime = destructTime
         self.speed = 6
         self.score = 100
+        self.exploding = 0
         if self.dx == 0 and self.dy == 0:
             self.direction = 12
         else:
@@ -45,7 +66,10 @@ class Enemy:
         print("number of enemies : ", len(enemies)+1)
 
     def draw(self):
-        Enemy.image.clip_draw(32*(self.direction+1), 320, 32, 32, self.x, self.y, 50, 50)
+        if self.collides is False:
+            Enemy.image.clip_draw(32*(self.direction+1), 320, 32, 32, self.x, self.y, 50, 50)
+        else:
+            self.image.clip_draw(0, 0, 50, 50, self.x, self.y, 50, 50)
 
     def update(self):
         if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
@@ -59,6 +83,19 @@ class Enemy:
         if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
+        if self.exploding / 10 == 0 and self.exploding > 0:
+            self.image = Enemy.explode1
+        elif self.exploding / 10 == 1:
+            self.image = Enemy.explode2
+        elif self.exploding / 10 == 2:
+            self.image = Enemy.explode3
+        elif self.exploding / 10 == 3:
+            self.image = Enemy.explode4
+        elif self.exploding / 10 == 4:
+            self.image = Enemy.explode5
+        elif self.exploding / 10 == 5:
+            self.image = Enemy.explode6
+
     def fire(self):
         global enemy_bullets
         now = time.time()
@@ -70,10 +107,28 @@ class Enemy:
 class CurveEnemy:
 
     image = None
+    explode1 = None
+    explode2 = None
+    explode3 = None
+    explode4 = None
+    explode5 = None
+    explode6 = None
 
     def __init__(self, sx, sy, destructTime, addi):
         if CurveEnemy.image is None:
             CurveEnemy.image = load_image("../res/sprites_32.png")
+        if CurveEnemy. explode1 is None:
+            CurveEnemy.explode1 = load_image("../res/explode1.png")
+        if CurveEnemy. explode2 is None:
+            CurveEnemy.explode2 = load_image("../res/explode2.png")
+        if CurveEnemy. explode3 is None:
+            CurveEnemy.explode3 = load_image("../res/explode3.png")
+        if CurveEnemy. explode4 is None:
+            CurveEnemy.explode4 = load_image("../res/explode4.png")
+        if CurveEnemy. explode5 is None:
+            CurveEnemy.explode5 = load_image("../res/explode5.png")
+        if CurveEnemy. explode6 is None:
+            CurveEnemy.explode6 = load_image("../res/explode6.png")
         self.type = 2
         self.x, self.y = sx, sy
         self.sx = self.x
@@ -89,6 +144,7 @@ class CurveEnemy:
         self.additional = addi
         self.addi = addi
         self.score = 100
+        self.exploding = 0
         if self.dx == 0 and self.dy == 0:
             self.direction = 12
         else:
@@ -97,9 +153,12 @@ class CurveEnemy:
                     self.direction = i + 18
                     break
 
-
     def draw(self):
-        CurveEnemy.image.clip_draw(32*(self.direction+1), 288, 32, 32, self.x, self.y, 50, 50)
+        if self.collides is False:
+
+            Enemy.image.clip_draw(32*(self.direction+1), 288, 32, 32, self.x, self.y, 50, 50)
+        else:
+            self.image.clip_draw(0, 0, 50, 50, self.x, self.y, 50, 50)
 
     def update(self):
         if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
@@ -137,6 +196,19 @@ class CurveEnemy:
         if self.y < -25 or self.y > 825 or self.x < -25 or self.x > 625:
             self.collides = True
 
+        if self.exploding / 10 == 0 and self.exploding > 0:
+            self.image = CurveEnemy.explode1
+        elif self.exploding / 10 == 1:
+            self.image = CurveEnemy.explode2
+        elif self.exploding / 10 == 2:
+            self.image = CurveEnemy.explode3
+        elif self.exploding / 10 == 3:
+            self.image = CurveEnemy.explode4
+        elif self.exploding / 10 == 4:
+            self.image = CurveEnemy.explode5
+        elif self.exploding / 10 == 5:
+            self.image = CurveEnemy.explode6
+
     def fire(self):
         global enemy_bullets
         now = time.time()
@@ -156,10 +228,28 @@ class CurveEnemy:
 
 class DivideEnemy:
     image = None
+    explode1 = None
+    explode2 = None
+    explode3 = None
+    explode4 = None
+    explode5 = None
+    explode6 = None
 
     def __init__(self, sx, sy, dxx, dyy, destructTime, en, divided):
         if DivideEnemy.image is None:
             DivideEnemy.image = load_image("../res/sprites_32.png")
+        if DivideEnemy.explode1 is None:
+            DivideEnemy.explode1 = load_image("../res/explode1.png")
+        if DivideEnemy.explode2 is None:
+            DivideEnemy.explode2 = load_image("../res/explode2.png")
+        if DivideEnemy.explode3 is None:
+            DivideEnemy.explode3 = load_image("../res/explode3.png")
+        if DivideEnemy.explode4 is None:
+            DivideEnemy.explode4 = load_image("../res/explode4.png")
+        if DivideEnemy.explode5 is None:
+            DivideEnemy.explode5 = load_image("../res/explode5.png")
+        if DivideEnemy.explode6 is None:
+            DivideEnemy.explode6 = load_image("../res/explode6.png")
         self.type = 3
         self.x, self.y = sx, sy
         self.sx = self.x
@@ -175,6 +265,7 @@ class DivideEnemy:
         self.enabled = en
         self.divided = divided
         self.score = 100
+        self.exploding = 0
         if self.divided > 0:
             self.score = 200
         if self.dx == 0 and self.dy == 0:
@@ -186,12 +277,28 @@ class DivideEnemy:
                     break
 
     def draw(self):
-        if self.divided == 0:
-            DivideEnemy.image.clip_draw(32 * (self.direction + 1), 224, 32, 32, self.x, self.y, 50, 50)
+        if self.collides is False:
+            if self.divided == 0:
+                DivideEnemy.image.clip_draw(32 * (self.direction + 1), 224, 32, 32, self.x, self.y, 50, 50)
+            else:
+                DivideEnemy.image.clip_draw(32 * (self.direction + 1), 192, 32, 32, self.x, self.y, 50, 50)
         else:
-            DivideEnemy.image.clip_draw(32 * (self.direction + 1), 192, 32, 32, self.x, self.y, 50, 50)
+            self.image.clip_draw(0, 0, 50, 50, self.x, self.y, 50, 50)
 
     def update(self):
+        if self.exploding / 10 == 0 and self.exploding > 0:
+            self.image = DivideEnemy.explode1
+        elif self.exploding / 10 == 1:
+            self.image = DivideEnemy.explode2
+        elif self.exploding / 10 == 2:
+            self.image = DivideEnemy.explode3
+        elif self.exploding / 10 == 3:
+            self.image = DivideEnemy.explode4
+        elif self.exploding / 10 == 4:
+            self.image = DivideEnemy.explode5
+        elif self.exploding / 10 == 5:
+            self.image = DivideEnemy.explode6
+
         if 635 >= self.x+self.dx >= -35 and 835 >= self.y+self.dy >= -35:
             self.x, self.y = self.x+self.dx, self.y+self.dy
         now = time.time()
