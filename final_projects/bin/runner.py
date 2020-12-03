@@ -57,7 +57,7 @@ while win_close is False:
             delay(0.01)
 
             after_play.update()
-
+            
     if in_game.change_state is not None:
         current_state = in_game.change_state
         in_game.change_state = None

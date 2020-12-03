@@ -21,6 +21,7 @@ num_bullets = 0
 class Enemy:
 
     image = None
+    shot_sound = None
     explode1 = None
     explode2 = None
     explode3 = None
@@ -43,6 +44,8 @@ class Enemy:
             Enemy.explode5 = load_image("../res/explode5.png")
         if Enemy. explode6 is None:
             Enemy.explode6 = load_image("../res/explode6.png")
+        if Enemy.shot_sound is None:
+            Enemy.shot_sound = load_wav("../sounds/shot.wav")
         self.type = 1
         self.x, self.y = sx, sy
         self.dx, self.dy = 0, 0
@@ -101,6 +104,8 @@ class Enemy:
         now = time.time()
         if self.last_fire+self.duration < now:
             enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, 0, -4))
+            Enemy.shot_sound.set_volume(60)
+            Enemy.shot_sound.play(1)
             self.last_fire = now
 
 
@@ -113,6 +118,7 @@ class CurveEnemy:
     explode4 = None
     explode5 = None
     explode6 = None
+    shot_sound = None
 
     def __init__(self, sx, sy, destructTime, addi):
         if CurveEnemy.image is None:
@@ -129,6 +135,8 @@ class CurveEnemy:
             CurveEnemy.explode5 = load_image("../res/explode5.png")
         if CurveEnemy. explode6 is None:
             CurveEnemy.explode6 = load_image("../res/explode6.png")
+        if CurveEnemy.shot_sound is None:
+            CurveEnemy.shot_sound = load_wav("../sounds/shot.wav")
         self.type = 2
         self.x, self.y = sx, sy
         self.sx = self.x
@@ -223,6 +231,8 @@ class CurveEnemy:
                 xSpeed = cos(temp)*4
                 ySpeed = sin(temp)*4
             enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, xSpeed, ySpeed))
+            CurveEnemy.shot_sound.set_volume(60)
+            CurveEnemy.shot_sound.play(1)
             self.last_fire = now
 
 
@@ -234,6 +244,7 @@ class DivideEnemy:
     explode4 = None
     explode5 = None
     explode6 = None
+    shot_sound = None
 
     def __init__(self, sx, sy, dxx, dyy, destructTime, en, divided):
         if DivideEnemy.image is None:
@@ -250,6 +261,8 @@ class DivideEnemy:
             DivideEnemy.explode5 = load_image("../res/explode5.png")
         if DivideEnemy.explode6 is None:
             DivideEnemy.explode6 = load_image("../res/explode6.png")
+        if DivideEnemy.shot_sound is None:
+            DivideEnemy.shot_sound = load_wav("../sounds/shot.wav")
         self.type = 3
         self.x, self.y = sx, sy
         self.sx = self.x
@@ -350,6 +363,8 @@ class DivideEnemy:
                 xSpeed = cos(temp)*4
                 ySpeed = sin(temp)*4
             enemy_bullets.append(Enemy_Bullet(self.x, self.y-12, xSpeed, ySpeed))
+            DivideEnemy.shot_sound.set_volume(60)
+            DivideEnemy.shot_sound.play(1)
             self.last_fire = now
 
 
@@ -358,7 +373,7 @@ class Enemy_Bullet:
 
     def __init__(self, x, y, dx, dy):
         if Enemy_Bullet.image is None:
-            Enemy_Bullet.image = load_image("../res/bullet_monster_8.png")
+            Enemy_Bullet.image = load_image("../res/bullet_8.png")
         self.x, self.y = x, y
         self.dx = dx
         self.dy = dy

@@ -1,7 +1,7 @@
 from enemy import *
 from pico2d import *
 
-maxStage = 2
+maxStage = 5
 currentStage = None
 
 

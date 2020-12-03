@@ -23,7 +23,12 @@ bgm = None
 end_sound = None
 stage1_sound = None
 stage2_sound = None
-
+stage3_sound = None
+stage4_sound = None
+stage5_sound = None
+die_sound = None
+explode_sound = None
+shot_sound = None
 stage_end_sounds = []
 
 def init():
@@ -32,7 +37,8 @@ def init():
     global catch_curve, catch_divide, catch_normal, num_curve, num_divide, num_normal, num_bullets
     global currentStage, stages, stage1, stage2, stage3, stage4, stage5
     global bg3, bg2, bg1
-    global bgm, end_sound, stage1_sound, stage2_sound, stage_end_sounds
+    global bgm, end_sound, stage1_sound, stage2_sound, stage3_sound, stage4_sound, stage5_sound, stage_end_sounds
+    global die_sound, explode_sound, shot_sound
 
     catch_normal = 0
     catch_curve = 0
@@ -71,47 +77,117 @@ def init():
     stage4 = []
     stage5 = []
 
-    stage1.append(CurveEnemy(375, 550, 6.5, 3))
-    stage1.append(CurveEnemy(225, 550, 6.5, 3))
-    stage1.append(CurveEnemy(425, 550, 8, 5))
-    stage1.append(CurveEnemy(175, 550, 8, 5))
+    stage1.append(Enemy(325, 500, 4.5))
+    stage1.append(Enemy(275, 500, 4.5))
+    stage1.append(Enemy(375, 500, 4))
+    stage1.append(Enemy(225, 500, 4))
+    stage1.append(Enemy(175, 500, 3.5))
+    stage1.append(Enemy(425, 500, 3.5))
 
-    stage1.append(DivideEnemy(225, 600, 0, 0, 10, True, 0))
-    stage1.append(DivideEnemy(375, 600, 0, 0, 10, True, 0))
+    stage1.append(Enemy(325, 550, 5))
+    stage1.append(Enemy(275, 550, 5))
+    stage1.append(Enemy(375, 550, 5))
+    stage1.append(Enemy(225, 550, 5))
 
-    stage1.append(Enemy(325, 500, 6))
-    stage1.append(Enemy(275, 500, 6))
-    stage1.append(Enemy(375, 500, 5.5))
-    stage1.append(Enemy(225, 500, 5.5))
-    stage1.append(Enemy(425, 500, 5))
-    stage1.append(Enemy(175, 500, 5))
+    stage2.append(Enemy(325, 500, 3.5))
+    stage2.append(Enemy(275, 500, 3.5))
+    stage2.append(Enemy(375, 500, 4))
+    stage2.append(Enemy(225, 500, 4))
+    stage2.append(Enemy(175, 500, 3.5))
+    stage2.append(Enemy(425, 500, 3.5))
 
-    stage2.append(Enemy(325, 500, 5.2))
-    stage2.append(Enemy(275, 500, 5.2))
-    stage2.append(Enemy(225, 500, 4.5))
-    stage2.append(Enemy(375, 500, 4.5))
+    stage2.append(CurveEnemy(125, 500, 5, 5))
+    stage2.append(CurveEnemy(475, 500, 5, 5))
+    stage2.append(CurveEnemy(225, 550, 5.5, 4))
+    stage2.append(CurveEnemy(375, 550, 5.5, 4))
 
-    stage2.append(Enemy(325, 550, 5))
-    stage2.append(Enemy(275, 550, 5))
+    stage2.append(Enemy(325, 500, 5.5))
+    stage2.append(Enemy(275, 500, 5.5))
+    stage2.append(Enemy(425, 500, 5))
+    stage2.append(Enemy(175, 500, 5))
 
-    stage2.append(Enemy(325, 450, 5))
-    stage2.append(Enemy(275, 450, 5))
-    stage2.append(Enemy(375, 450, 4.5))
-    stage2.append(Enemy(225, 450, 4.5))
-    stage2.append(Enemy(175, 450, 4))
-    stage2.append(Enemy(425, 450, 4))
+    stage3.append(CurveEnemy(375, 550, 6.5, 3))
+    stage3.append(CurveEnemy(225, 550, 6.5, 3))
+    stage3.append(CurveEnemy(425, 550, 8, 5))
+    stage3.append(CurveEnemy(175, 550, 8, 5))
 
-    stage2.append(CurveEnemy(425, 500, 5, 3.5))
-    stage2.append(CurveEnemy(175, 500, 5, 3.5))
+    stage3.append(DivideEnemy(225, 600, 0, 0, 10, True, 0))
+    stage3.append(DivideEnemy(375, 600, 0, 0, 10, True, 0))
 
-    stage2.append(CurveEnemy(375, 550, 5.5, 3.7))
-    stage2.append(CurveEnemy(225, 550, 5.5, 3.7))
+    stage3.append(Enemy(325, 500, 6))
+    stage3.append(Enemy(275, 500, 6))
+    stage3.append(Enemy(375, 500, 5.5))
+    stage3.append(Enemy(225, 500, 5.5))
+    stage3.append(Enemy(425, 500, 5))
+    stage3.append(Enemy(175, 500, 5))
+    stage3.append(Enemy(325, 550, 6.5))
+    stage3.append(Enemy(275, 550, 6.5))
+    stage3.append(Enemy(475, 500, 8))
+    stage3.append(Enemy(125, 500, 8))
 
-    stage2.append(DivideEnemy(425, 550, 0, 0, 5.5, True, 0))
-    stage2.append(DivideEnemy(175, 550, 0, 0, 5.5, True, 0))
+    stage4.append(Enemy(325, 500, 5.2))
+    stage4.append(Enemy(275, 500, 5.2))
+    stage4.append(Enemy(225, 500, 4.5))
+    stage4.append(Enemy(375, 500, 4.5))
+
+    stage4.append(Enemy(325, 550, 5))
+    stage4.append(Enemy(275, 550, 5))
+
+    stage4.append(Enemy(325, 450, 5))
+    stage4.append(Enemy(275, 450, 5))
+    stage4.append(Enemy(375, 450, 4.5))
+    stage4.append(Enemy(225, 450, 4.5))
+    stage4.append(Enemy(175, 450, 4))
+    stage4.append(Enemy(425, 450, 4))
+
+    stage4.append(CurveEnemy(425, 500, 5, 3.5))
+    stage4.append(CurveEnemy(175, 500, 5, 3.5))
+
+    stage4.append(CurveEnemy(375, 550, 5.5, 3.7))
+    stage4.append(CurveEnemy(225, 550, 5.5, 3.7))
+
+    stage4.append(DivideEnemy(425, 550, 0, 0, 5.5, True, 0))
+    stage4.append(DivideEnemy(175, 550, 0, 0, 5.5, True, 0))
+
+    stage5.append(Enemy(325, 450, 4))
+    stage5.append(Enemy(275, 450, 4))
+    stage5.append(Enemy(375, 450, 3.5))
+    stage5.append(Enemy(225, 450, 3.5))
+    stage5.append(Enemy(425, 450, 4))
+    stage5.append(Enemy(175, 450, 4))
+    stage5.append(Enemy(475, 450, 3.5))
+    stage5.append(Enemy(125, 450, 3.5))
+
+    stage5.append(Enemy(325, 500, 4))
+    stage5.append(Enemy(275, 500, 4))
+    stage5.append(Enemy(425, 500, 4.5))
+    stage5.append(Enemy(175, 500, 4.5))
+    stage5.append(Enemy(125, 500, 4.5))
+    stage5.append(Enemy(475, 500, 4.5))
+    stage5.append(CurveEnemy(375, 500, 4, 4))
+    stage5.append(CurveEnemy(225, 500, 4, 4))
+
+    stage5.append(Enemy(275, 550, 5.5))
+    stage5.append(Enemy(325, 550, 5.5))
+    stage5.append(Enemy(225, 550, 5))
+    stage5.append(Enemy(375, 550, 5))
+    stage5.append(DivideEnemy(425, 550, 0, 0, 5, True, 0))
+    stage5.append(DivideEnemy(175, 550, 0, 0, 5, True, 0))
+    stage5.append(CurveEnemy(475, 550, 5.5, 4))
+    stage5.append(CurveEnemy(125, 550, 5.5, 4))
+
+    stage5.append(Enemy(325, 600, 6))
+    stage5.append(Enemy(275, 600, 6))
+    stage5.append(Enemy(425, 600, 6))
+    stage5.append(Enemy(175, 600, 6))
+    stage5.append(DivideEnemy(375, 600, 0, 0, 6.5, True, 0))
+    stage5.append(DivideEnemy(225, 600, 0, 0, 6.5, True, 0))
 
     stages.append(stage1)
     stages.append(stage2)
+    stages.append(stage3)
+    stages.append(stage4)
+    stages.append(stage5)
     # end init stage
 
     if len(enemies) == 0:
@@ -124,11 +200,20 @@ def init():
     bg1 = Background1()
 
     bgm = load_music("../sounds/game_bgm.ogg")
-    end_sound = load_wav("../sounds/game_end.wav")
+    end_sound = load_wav("../sounds/game_lose.wav")
     stage1_sound = load_wav("../sounds/stage1_end.wav")
     stage2_sound = load_wav("../sounds/stage2_end.wav")
+    stage3_sound = load_wav("../sounds/stage3_end.wav")
+    stage4_sound = load_wav("../sounds/stage4_end.wav")
+    stage5_sound = load_wav("../sounds/stage5_end.wav")
+    die_sound = load_wav("../sounds/player_die.wav")
+    explode_sound = load_wav("../sounds/explode.wav")
+
     stage_end_sounds.append(stage1_sound)
     stage_end_sounds.append(stage2_sound)
+    stage_end_sounds.append(stage3_sound)
+    stage_end_sounds.append(stage4_sound)
+    stage_end_sounds.append(stage5_sound)
     bgm.set_volume(40)
     end_sound.set_volume(128)
     bgm.repeat_play()
@@ -140,7 +225,7 @@ def update():
     global catch_curve, catch_divide, catch_normal, current_score, bullets_evade, num_normal, num_curve, num_divide
     global stages, currentStage, maxStage
     global bg3, bg2
-    global bgm, end_sound, stage_end_sounds
+    global bgm, end_sound, stage_end_sounds, die_sound, explode_sound
     #  모든 객체 상태 갱신
     player.update()
     for en in enemies:
@@ -159,6 +244,8 @@ def update():
             if en.x-22 <= b.x <= en.x+22 and en.y-22 <= b.y <= en.y+22:
                 b.crash = True
                 en.collides = True
+                explode_sound.set_volume(50)
+                explode_sound.play(1)
                 if en.type == 1:
                     catch_normal += en.score
                     num_normal += 1
@@ -190,6 +277,8 @@ def update():
         if player.x-22 <= eb.x <= player.x+22 and player.y-22 <= eb.y <= player.y+22 and player.invincible is False:
             eb.crash = True
             player.collides = True
+            explode_sound.set_volume(50)
+            explode_sound.play(1)
     for eb in enemy_bullets:  # 적 총알 맵 끝 도달
         if eb.crash:
             if eb.crashed_to_wall is True:
@@ -203,8 +292,11 @@ def update():
     for en in enemies:  # 적 기체와 플레이어 충돌
         if player.x-31 <= en.x <= player.x+31 and player.y-31 <= en.y <= player.y+31 and player.invincible is False:
             player.collides = True
+            explode_sound.set_volume(50)
+            explode_sound.play(1)
 
     if player.collides:  # 플레이어 사망
+
         if player.life == 1:
             trash_can.append(player)
 
@@ -238,10 +330,12 @@ def update():
             player.collides = False
             player.invincible = True
             player.last_inv = time.time()
+            die_sound.set_volume(50)
+            die_sound.play(1)
 
     elif len(enemies) == 0 and len(enemy_bullets) == 0:  # 플레이어 생존 및 모든 적 처치시
-        stage_end_sounds[randint(0, 1)].set_volume(128)
-        stage_end_sounds[randint(0, 1)].play(1)
+        stage_end_sounds[currentStage].set_volume(128)
+        stage_end_sounds[currentStage].play(1)
         if currentStage + 1 >= maxStage:  # 마지막 스테이지일 시 종료
             trash_can.append(player)
             player = None

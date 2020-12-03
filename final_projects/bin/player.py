@@ -8,10 +8,13 @@ player_bullets = []
 class Player:
 
     image = None
+    shot_sound = None
 
     def __init__(self):
         if Player.image is None:
             Player.image = load_image("../res/sprites_32.png")
+        if Player.shot_sound is None:
+            Player.shot_sound = load_wav("../sounds/shot.wav")
         self.x = 300
         self.y = 50
         self.dx = 0
@@ -47,6 +50,8 @@ class Player:
         now = time.time()
         if self.last_fire+self.duration < now:
             player_bullets.append(Player_Bullet(self.x, self.y+12))
+            Player.shot_sound.set_volume(60)
+            Player.shot_sound.play(1)
             self.last_fire = now
 
 
